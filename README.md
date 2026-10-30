@@ -2,6 +2,10 @@
 
 Un directorio para conocer, organizar y acompañar a cada cliente. Desarrollado para el desafío técnico de CEO Marketing con Django, HTML semántico, CSS propio y JavaScript Vanilla.
 
+![Dashboard de Nexo CRM](docs/screenshots/desktop.jpg)
+
+[Vista móvil](docs/screenshots/mobile.jpg) · [Formulario móvil](docs/screenshots/mobile-form.jpg) · [Vista tablet](docs/screenshots/tablet.jpg)
+
 ## Qué incluye
 
 - Dashboard con totales de prospectos, clientes e inactivos.

@@ -1219,7 +1219,7 @@ tbody tr:hover {
     display: none;
   }
 }
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .sidebar {
     position: static;
     width: 100%;
