@@ -1,0 +1,49 @@
+{% extends 'clients/base.html' %}
+{% load static %}
+{% block scripts %}<script src="{% static 'clients/app.js' %}" defer></script>{% endblock %}
+{% block body %}
+<aside class="sidebar" aria-label="Navegación principal">
+  <a class="brand" href="{% url 'dashboard' %}" aria-label="Nexo CRM, inicio"><span class="brand-mark">n</span> nexo<span class="brand-dot">.</span></a>
+  <div class="workspace"><span class="workspace-icon">N</span><div>Mi espacio<small>Gestión de clientes</small></div><span class="workspace-chevron" aria-hidden="true">⌄</span></div>
+  <span class="nav-label">ESPACIO DE TRABAJO</span>
+  <nav><a class="nav-item active" href="{% url 'dashboard' %}" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M15 3a4 4 0 0 1 0 8m7 10v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>Clientes <span class="nav-count" id="nav-count">—</span></a>{% if user.is_staff %}<a class="nav-item" href="{% url 'admin:clients_client_changelist' %}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3 7v5c0 5 9 9 9 9s9-4 9-9V7Z"/><path d="m8 12 3 3 5-6"/></svg>Administración <span aria-hidden="true">↗</span></a>{% endif %}</nav>
+  <div class="sidebar-note"><span class="note-star" aria-hidden="true">✳</span><h3>Cada conexión cuenta.</h3><p>Detrás de cada cliente,<br>hay una nueva posibilidad.</p><span class="note-line" aria-hidden="true"></span></div>
+  <div class="profile"><span class="avatar user-avatar">{{ user.get_username|first|upper }}</span><div>{{ user.get_username }}<small>Mi cuenta</small></div><form action="{% url 'logout' %}" method="post">{% csrf_token %}<button class="icon-button" aria-label="Cerrar sesión" title="Cerrar sesión">↪</button></form></div>
+</aside>
+<div class="main-shell">
+  <header class="topbar"><span class="breadcrumb">Mi espacio <span aria-hidden="true">/</span> <strong>Clientes</strong></span><span class="topbar-label"><span class="online-dot" aria-hidden="true"></span> Tu red, en un solo lugar</span></header>
+  <main id="main" class="dashboard">
+    <section class="page-heading"><div><span class="eyebrow">CONEXIONES QUE CRECEN</span><h1>Tu próxima gran relación<span>.</span></h1><p>Conoce, organiza y acompaña a tus clientes en cada etapa.</p></div><button class="button primary" id="new-client"><span aria-hidden="true">＋</span> Nuevo cliente</button></section>
+    <section class="metrics" aria-label="Resumen de clientes">
+      <article class="metric-card total-card"><div class="metric-label">Total de clientes <span class="metric-symbol" aria-hidden="true">↗</span></div><strong id="metric-total">—</strong><span class="metric-description">Personas que forman parte de tu red</span><div class="spark-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+      <article class="metric-card"><div class="metric-label"><span class="status-dot prospect"></span> Prospectos</div><strong id="metric-prospect">—</strong><span class="metric-description">Nuevas oportunidades por explorar</span><div class="metric-track"><span id="track-prospect" class="prospect"></span></div></article>
+      <article class="metric-card"><div class="metric-label"><span class="status-dot customer"></span> Clientes</div><strong id="metric-customer">—</strong><span class="metric-description">Relaciones que ya están en marcha</span><div class="metric-track"><span id="track-customer" class="customer"></span></div></article>
+      <article class="metric-card"><div class="metric-label"><span class="status-dot inactive"></span> Inactivos</div><strong id="metric-inactive">—</strong><span class="metric-description">Conexiones para volver a cultivar</span><div class="metric-track"><span id="track-inactive" class="inactive"></span></div></article>
+    </section>
+    <section class="client-panel" aria-labelledby="directory-heading">
+      <div class="panel-heading"><div><h2 id="directory-heading">Tu directorio <span id="directory-count" class="count-badge">—</span></h2><p>Pequeños detalles. Grandes conexiones.</p></div><span class="panel-caption">HECHO PARA CONECTAR</span></div>
+      <div class="toolbar"><label class="search-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><input id="search" type="search" placeholder="Buscar por nombre o empresa…" aria-label="Buscar por nombre o empresa" autocomplete="off"><kbd aria-hidden="true">/</kbd></label><div class="filter-wrap"><label for="status-filter">Estado</label><select id="status-filter"><option value="">Todos los estados</option><option value="prospect">Prospecto</option><option value="customer">Cliente</option><option value="inactive">Inactivo</option></select></div></div>
+      <p id="list-error" class="list-error" role="alert" hidden><span></span> <button id="retry" class="text-button">Volver a intentar</button></p>
+      <div class="table-wrap" id="table-region" aria-busy="true"><table><thead><tr><th scope="col">Nombre</th><th scope="col">Empresa</th><th scope="col">Contacto</th><th scope="col">Estado</th><th scope="col" class="actions-column">Acciones</th></tr></thead><tbody id="client-rows"></tbody></table></div>
+      <div class="empty-state" id="empty-state" hidden><span class="empty-icon" aria-hidden="true">◎</span><h3 id="empty-title">Tu red empieza con una conexión</h3><p id="empty-message">Añade tu primer cliente para comenzar.</p><button id="empty-action" class="button secondary">Añadir cliente</button></div>
+      <div class="loading-state" id="loading-state" role="status"><span class="spinner"></span> Cargando tu directorio…</div>
+      <footer class="table-footer"><p id="pagination-label" aria-live="polite">Preparando clientes…</p><div class="pagination"><button class="page-button" id="previous-page" aria-label="Página anterior" disabled>‹</button><span id="page-number">1</span><button class="page-button" id="next-page" aria-label="Página siguiente" disabled>›</button></div></footer>
+    </section>
+    <footer class="page-footer"><span><span class="footer-mark">n.</span> Una buena relación empieza con un buen seguimiento.</span><span>NEXO CRM</span></footer>
+  </main>
+</div>
+<dialog id="client-dialog" class="modal" aria-labelledby="dialog-title"><form id="client-form">
+  <div class="modal-heading"><div><span class="eyebrow">UN PASO MÁS CERCA</span><h2 id="dialog-title">Nueva conexión</h2></div><button type="button" class="icon-button" data-close aria-label="Cerrar formulario">×</button></div>
+  <p class="modal-intro">Los detalles de hoy construyen las relaciones de mañana.</p>
+  <p class="form-alert" id="form-error" role="alert" hidden></p>
+  <div class="form-grid">
+    <div class="field"><label for="name">Nombre completo <span>*</span></label><input id="name" name="name" required maxlength="120" autocomplete="name" placeholder="Ej. Sofía Andrade" aria-describedby="error-name"><small class="field-error" id="error-name"></small></div>
+    <div class="field"><label for="company">Empresa</label><input id="company" name="company" maxlength="160" autocomplete="organization" placeholder="Ej. Estudio Oliva" aria-describedby="error-company"><small class="field-error" id="error-company"></small></div>
+    <div class="field"><label for="email">Correo electrónico <span>*</span></label><input id="email" name="email" type="email" required maxlength="254" autocomplete="email" placeholder="nombre@empresa.com" aria-describedby="error-email"><small class="field-error" id="error-email"></small></div>
+    <div class="field"><label for="phone">Teléfono</label><input id="phone" name="phone" type="tel" maxlength="30" pattern="\+?[0-9\s().\-]{6,30}" autocomplete="tel" placeholder="Ej. +593 99 123 4567" aria-describedby="error-phone"><small class="field-error" id="error-phone"></small></div>
+    <div class="field full-width"><label for="status">Estado de la relación <span>*</span></label><select id="status" name="status" required aria-describedby="error-status"><option value="prospect">Prospecto</option><option value="customer">Cliente</option><option value="inactive">Inactivo</option></select><small class="field-error" id="error-status"></small></div>
+  </div><div class="modal-footer"><small>* Campos obligatorios</small><div><button class="button secondary" data-close type="button">Cancelar</button><button class="button primary" id="save-client" type="submit">Guardar cliente</button></div></div>
+</form></dialog>
+<dialog id="delete-dialog" class="modal delete-modal" aria-labelledby="delete-title"><span class="delete-icon" aria-hidden="true">!</span><h2 id="delete-title">¿Eliminar esta conexión?</h2><p>Vas a eliminar a <strong id="delete-name"></strong> del directorio. Esta acción no se puede deshacer.</p><p id="delete-error" class="form-alert" role="alert" hidden></p><div class="delete-actions"><button class="button secondary" data-close>Conservar cliente</button><button class="button danger" id="confirm-delete">Sí, eliminar</button></div></dialog>
+<div class="toast-region" id="toasts" role="status" aria-live="polite" aria-atomic="true"></div>
+{% endblock %}
