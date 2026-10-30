@@ -1,0 +1,16 @@
+services:
+  web:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      DJANGO_DEBUG: "0"
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?Copia .env.example a .env y configura DJANGO_SECRET_KEY}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1,[::1]}
+      DATABASE_PATH: /data/db.sqlite3
+    volumes:
+      - crm_data:/data
+    restart: unless-stopped
+
+volumes:
+  crm_data:

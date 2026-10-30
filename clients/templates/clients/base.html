@@ -1,0 +1,18 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173e35">
+  <meta name="description" content="Nexo CRM: un espacio sencillo para gestionar tus relaciones con clientes.">
+  <title>{% block title %}Clientes · Nexo CRM{% endblock %}</title>
+  <link rel="icon" href="{% static 'clients/mark.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'clients/app.css' %}">
+  {% block scripts %}{% endblock %}
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+  {% block body %}{% endblock %}
+</body>
+</html>

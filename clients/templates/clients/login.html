@@ -1,0 +1,23 @@
+{% extends 'clients/base.html' %}
+{% block title %}Bienvenido · Nexo CRM{% endblock %}
+{% block body %}
+<main id="main" class="login-layout">
+  <section class="login-story">
+    <a class="brand" href="{% url 'dashboard' %}"><span class="brand-mark">n</span> nexo<span class="brand-dot">.</span></a>
+    <div><span class="eyebrow">MENOS FRICCIÓN. MÁS CONEXIONES.</span><h1>Las buenas relaciones<br>empiezan aquí<span>.</span></h1><p>Un espacio para tus clientes.<br>Más tiempo para hacer crecer tus ideas.</p></div>
+    <span class="login-caption">NEXO CRM / TU PRÓXIMA CONEXIÓN</span>
+  </section>
+  <section class="login-form-wrap">
+    <form method="post" class="login-form">
+      {% csrf_token %}
+      <span class="eyebrow">TU ESPACIO DE TRABAJO</span>
+      <h2>Qué bueno verte.</h2><p>Inicia sesión para continuar con tus clientes.</p>
+      {% if form.errors %}<p class="form-alert" role="alert">El usuario o la contraseña no son correctos.</p>{% endif %}
+      <label for="id_username">Usuario</label><input id="id_username" name="username" autocomplete="username" required autofocus maxlength="150">
+      <label for="id_password">Contraseña</label><input id="id_password" name="password" type="password" autocomplete="current-password" required>
+      <button class="button primary" type="submit">Entrar a mi espacio <span aria-hidden="true">↗</span></button>
+      <small>Acceso privado · Usa el usuario creado durante la instalación.</small>
+    </form>
+  </section>
+</main>
+{% endblock %}
